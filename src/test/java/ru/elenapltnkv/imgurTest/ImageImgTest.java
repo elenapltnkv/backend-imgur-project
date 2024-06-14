@@ -11,7 +11,7 @@ public class ImageImgTest extends BaseTest {
     String imageDeleteHash;
 
     @Test
-    void uploadImageTest() {
+    void uploadImageImgTest() {
         imageDeleteHash = given()
                 .header("Authorization", token)
                 .body(new File("/home/user/IdeaProjects/backend-imgur-project/src/test/resources/img.png"))

@@ -12,7 +12,7 @@ import static io.restassured.RestAssured.given;
 public class ImageWebpTest extends BaseTest {
 
     @Test
-    void uploadImageTest() {
+    void uploadImageWebpTest() {
         given()
                 .header("Authorization", token)
                 .body(new File("/home/user/IdeaProjects/backend-imgur-project/src/test/resources/image/i.webp"))

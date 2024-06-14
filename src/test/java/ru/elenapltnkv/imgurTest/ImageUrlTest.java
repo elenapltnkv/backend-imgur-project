@@ -13,7 +13,7 @@ public class ImageUrlTest extends BaseTest {
     String imageDeleteHash;
 
     @Test
-    void uploadImageTest() {
+    void uploadImageUrlTest() {
         String URL = "https://pictures.pibig.info/uploads/posts/2023-04/1680603592_pictures-pibig-info-p-realistichnie-risunki-zhivotnikh-instagram-35.jpg";
         imageDeleteHash = given()
                 .header("Authorization", token)

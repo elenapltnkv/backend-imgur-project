@@ -11,7 +11,7 @@ public class ImagePNGTest extends BaseTest {
     String imageDeleteHash;
 
     @Test
-    void uploadImageTest() {
+    void uploadImagePNGTest() {
         imageDeleteHash = given()
                 .header("Authorization", token)
                 .body(new File("/home/user/IdeaProjects/backend-imgur-project/src/test/resources/free-icon-linux-2333464.png"))

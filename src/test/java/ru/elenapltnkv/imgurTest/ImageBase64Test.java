@@ -12,7 +12,7 @@ public class ImageBase64Test extends BaseTest {
     String imageDeleteHash;
 
     @Test
-    void uploadImageTest() throws FileNotFoundException {
+    void uploadImageBase64Test() throws FileNotFoundException {
         imageDeleteHash = given()
                 .header("Authorization", token)
                 .body(new FileInputStream("/home/user/IdeaProjects/backend-imgur-project/src/test/resources/base64.txt"))
