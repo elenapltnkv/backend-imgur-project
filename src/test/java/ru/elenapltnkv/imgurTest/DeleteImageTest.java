@@ -14,7 +14,7 @@ public class DeleteImageTest extends BaseTest {
     void setUp() {
         imageDeleteHash = given()
                 .header("Authorization", token)
-                .body(new File("/home/user/IdeaProjects/backend-imgur-project/src/test/resources/img_1.png"))
+                .body(new File("/home/user/IdeaProjects/backend-imgur-project/src/test/resources/image/img_1.png"))
                 .when()
                 .post("/upload")
                 .jsonPath()
