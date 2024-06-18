@@ -1,28 +1,27 @@
 package ru.elenapltnkv.imgurTest;
 
+
 import org.hamcrest.CoreMatchers;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.regex.Matcher;
 
 import static io.restassured.RestAssured.given;
+import static ru.elenapltnkv.imgurTest.spec.Specifications.negativeResponseSpecification;
+
 
 public class ImageWebpTest extends BaseTest {
 
     @Test
     void uploadImageWebpTest() {
         given()
-                .header("Authorization", token)
                 .body(new File("/home/user/IdeaProjects/backend-imgur-project/src/test/resources/image/i.webp"))
                 .expect()
+                .spec(negativeResponseSpecification)
                 .when()
                 .post("/upload")
                 .prettyPeek()
                 .then()
-                .statusCode(400)
-                .body("success", CoreMatchers.is(false))
                 .body("data.error", CoreMatchers.equalTo("We don't support that file type!"));
 
     }

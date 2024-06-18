@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.requestSpecification;
 
 public class ImageGifTest extends BaseTest {
     String imageDeleteHash;
@@ -13,15 +14,10 @@ public class ImageGifTest extends BaseTest {
     @Test
     void uploadImageGifTest() {
         imageDeleteHash = given()
-                .header("Authorization", token)
-                .body(new File("/home/user/IdeaProjects/backend-imgur-project/src/test/resources/HrNfJ.gif"))
-                .expect()
-                .statusCode(200)
+                .body(new File("/home/user/IdeaProjects/backend-imgur-project/src/test/resources/image/HrNfJ.gif"))
                 .when()
                 .post("/upload")
                 .prettyPeek()
-//                .then()
-//                .statusCode(200);
                 .jsonPath()
                 .get("data.deletehash");
     }

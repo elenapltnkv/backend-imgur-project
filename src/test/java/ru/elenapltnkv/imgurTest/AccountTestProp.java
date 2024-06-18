@@ -14,44 +14,36 @@ import java.util.Properties;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static ru.elenapltnkv.imgurTest.spec.Specifications.positiveResponseSpecification;
+import static ru.elenapltnkv.imgurTest.spec.Specifications.requestSpecification;
 
 
-public class AccountTestProp extends BaseTest{
+public class AccountTestProp extends BaseTest {
 
 
     @Test
     public void getAccountTest() {
-        given()
-                .header("Authorization", token)
-                .log()
-                .method()
-                .log()
-                .uri()
+        given(requestSpecification)
                 .when()
-                .get("/account/{username}",username)
+                .get("/account/{username}", username)
                 .prettyPeek()
                 .then()
-                .statusCode(200)
-                .body("success", CoreMatchers.is(true))
                 .body("data.url", CoreMatchers.equalTo(username));
     }
-//todo
+
+    //todo
     @Test
     void getAccountSettingsTest() {
+        //host=https://api.imgur.com/3
         //https://api.imgur.com/3/account/me/settings
         Response response =
-        given()
-                .header("Authorization", "Bearer 61bb09cf6c8bc60ca33c508263305a1570a919c5")
-                .log()
-                .all()
-                .expect()
-                .body("data.email", CoreMatchers.equalTo("elenapltnkv@gmail.com"))//"email": "elenapltnkv@gmail.com"
-                .body("success", CoreMatchers.is(true))
-                .when()
-                .get("https://api.imgur.com/3/account/me/settings")
-                .prettyPeek();
-//                .then()
-//                .statusCode(200);
+                given(requestSpecification)
+                        .expect()
+                        .spec(positiveResponseSpecification)
+                        .body("data.email", CoreMatchers.equalTo("elenapltnkv@gmail.com"))//"email": "elenapltnkv@gmail.com"
+                        .when()
+                        .get(host+"/account/me/settings")
+                        .prettyPeek();
         assertThat(response.jsonPath().get("data.email"), equalTo("elenapltnkv@gmail.com"));
 
     }

@@ -2,10 +2,13 @@ package ru.elenapltnkv.imgurTest;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import ru.elenapltnkv.imgurTest.spec.Specifications;
 
 import java.io.File;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.requestSpecification;
+import static ru.elenapltnkv.imgurTest.spec.Specifications.positiveUploadResponseSpecification;
 
 public class ImageImgTest extends BaseTest {
     String imageDeleteHash;
@@ -13,15 +16,13 @@ public class ImageImgTest extends BaseTest {
     @Test
     void uploadImageImgTest() {
         imageDeleteHash = given()
-                .header("Authorization", token)
-                .body(new File("/home/user/IdeaProjects/backend-imgur-project/src/test/resources/img.png"))
+                .spec(Specifications.requestSpecification)
+                .body(new File("/home/user/IdeaProjects/backend-imgur-project/src/test/resources/image/img.png"))
                 .expect()
-                .statusCode(200)
+                .spec(positiveUploadResponseSpecification)
                 .when()
                 .post("/upload")
                 .prettyPeek()
-//                .then()
-//                .statusCode(200);
                 .jsonPath()
                 .get("data.deletehash");
     }
@@ -29,11 +30,12 @@ public class ImageImgTest extends BaseTest {
     @AfterEach
     void tearDown() {
         given()
+                .spec(Specifications.requestSpecification)
+                .expect()
+                .spec(positiveUploadResponseSpecification)
                 .when()
-                .header("Authorization", token)
-                .delete("/image/{imageDeleteHash}", imageDeleteHash)
-                .then()
-                .statusCode(200);
+                .delete("/image/{imageDeleteHash}", imageDeleteHash);
+
 
     }
 }

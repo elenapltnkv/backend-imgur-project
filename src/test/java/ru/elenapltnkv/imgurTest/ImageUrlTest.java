@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.net.URL;
 
 import static io.restassured.RestAssured.given;
+import static ru.elenapltnkv.imgurTest.spec.Specifications.*;
 
 public class ImageUrlTest extends BaseTest {
     String imageDeleteHash;
@@ -18,30 +19,25 @@ public class ImageUrlTest extends BaseTest {
     @Test
     void uploadImageUrlTest() throws FileNotFoundException {
         String imgURL = "https://pictures.pibig.info/uploads/posts/2023-04/1680603592_pictures-pibig-info-p-realistichnie-risunki-zhivotnikh-instagram-35.jpg";
-        imageDeleteHash = given()
-                .header("Authorization", token)
-                .formParam("image",imgURL)
-                //.body()
+        imageDeleteHash = given(requestSpecification)
+                .formParam("image", imgURL)
                 .expect()
-                .statusCode(200)
+                .spec(positiveResponseSpecification)
                 .body("data.type", CoreMatchers.equalTo("image/jpeg"))
                 .when()
                 .post("/upload")
                 .prettyPeek()
-//                .then()
-//                .statusCode(200);
                 .jsonPath()
                 .get("data.deletehash");
     }
 
     @AfterEach
     void tearDown() {
-        given()
+        given(requestSpecification)
+                .expect()
+                .spec(positiveUploadResponseSpecification)
                 .when()
-                .header("Authorization", token)
-                .delete("/image/{imageDeleteHash}", imageDeleteHash)
-                .then()
-                .statusCode(200);
+                .delete("/image/{imageDeleteHash}", imageDeleteHash);
 
     }
 }
