@@ -1,11 +1,17 @@
 package ru.elenapltnkv.imgurTest;
 
+import dao.ImageResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
+import static base.Endpoints.IMAGR_DELETE_HASH;
+import static base.Endpoints.UPLOAD_IMG;
+import static base.Images.NEW_PNG;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static ru.elenapltnkv.imgurTest.spec.Specifications.*;
 
 public class ImagePNGTest extends BaseTest {
@@ -13,15 +19,23 @@ public class ImagePNGTest extends BaseTest {
 
     @Test
     void uploadImagePNGTest() {
-        imageDeleteHash = given(requestSpecification)
-                .body(new File("/home/user/IdeaProjects/backend-imgur-project/src/test/resources/image/free-icon-linux-2333464.png"))
-                .expect()
-                .spec(positiveResponseSpecification)
-                .when()
-                .post("/upload")
-                .prettyPeek()
-                .jsonPath()
-                .get("data.deletehash");
+        ImageResponse response =
+                given(requestSpecification)
+                        .multiPart("image", new File(NEW_PNG.getPath()))
+                        .expect()
+                        .spec(positiveResponseSpecification)
+                        .when()
+                        .post(UPLOAD_IMG)
+                        .prettyPeek()
+                        .then()
+                        .extract()
+                        .as(ImageResponse.class);
+
+        imageDeleteHash = response.getData().getDeletehash();
+
+        assertThat(response.getData().getAccountId(), equalTo(179239057));
+        assertThat(response.getData().getType(), equalTo("image/png"));
+
     }
 
     @AfterEach
@@ -30,10 +44,10 @@ public class ImagePNGTest extends BaseTest {
                 .expect()
                 .spec(positiveUploadResponseSpecification)
                 .when()
-                .delete("/image/{imageDeleteHash}", imageDeleteHash);
+                .delete(IMAGR_DELETE_HASH, imageDeleteHash);
 
 
     }
 
-    //todo refactoring добавить поджо, изменить тесты (добавить в недостающие спецификации)
+
 }

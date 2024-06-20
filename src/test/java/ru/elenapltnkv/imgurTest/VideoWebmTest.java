@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
+import static base.Endpoints.IMAGR_DELETE_HASH;
+import static base.Endpoints.UPLOAD_IMG;
+import static base.Images.WEBM_VIDEO;
 import static io.restassured.RestAssured.given;
 import static ru.elenapltnkv.imgurTest.spec.Specifications.*;
 
@@ -14,11 +17,11 @@ public class VideoWebmTest extends BaseTest {
     @Test
     void uploadVideoWebmTest() {
         imageDeleteHash = given(requestSpecification)
-                .body(new File("/home/user/IdeaProjects/backend-imgur-project/src/test/resources/image/sample_1920x1080.webm"))
+                .multiPart("image",new File(WEBM_VIDEO.getPath()))
                 .expect()
                 .spec(positiveResponseSpecification)
                 .when()
-                .post("/upload")
+                .post(UPLOAD_IMG)
                 .prettyPeek()
                 .jsonPath()
                 .get("data.deletehash");
@@ -30,7 +33,7 @@ public class VideoWebmTest extends BaseTest {
                 .expect()
                 .spec(positiveUploadResponseSpecification)
                 .when()
-                .delete("/image/{imageDeleteHash}", imageDeleteHash);
+                .delete(IMAGR_DELETE_HASH, imageDeleteHash);
 
     }
 }

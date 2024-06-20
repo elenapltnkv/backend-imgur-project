@@ -1,16 +1,19 @@
 package ru.elenapltnkv.imgurTest;
 
-import io.restassured.mapper.ObjectMapperType;
+import dao.ImageResponse;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.net.URL;
 
+import static base.Endpoints.IMAGR_DELETE_HASH;
+import static base.Endpoints.UPLOAD_IMG;
+import static base.Images.URL_IMG;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static ru.elenapltnkv.imgurTest.spec.Specifications.*;
 
 public class ImageUrlTest extends BaseTest {
@@ -18,17 +21,23 @@ public class ImageUrlTest extends BaseTest {
 
     @Test
     void uploadImageUrlTest() throws FileNotFoundException {
-        String imgURL = "https://pictures.pibig.info/uploads/posts/2023-04/1680603592_pictures-pibig-info-p-realistichnie-risunki-zhivotnikh-instagram-35.jpg";
-        imageDeleteHash = given(requestSpecification)
-                .formParam("image", imgURL)
-                .expect()
-                .spec(positiveResponseSpecification)
-                .body("data.type", CoreMatchers.equalTo("image/jpeg"))
-                .when()
-                .post("/upload")
-                .prettyPeek()
-                .jsonPath()
-                .get("data.deletehash");
+        ImageResponse response =
+                given(requestSpecification)
+                        .multiPart("image", URL_IMG.getPath())
+                        .expect()
+                        .spec(positiveResponseSpecification)
+                        .when()
+                        .post(UPLOAD_IMG)
+                        .prettyPeek()
+                        .then()
+                        .extract()
+                        .as(ImageResponse.class);
+
+        imageDeleteHash = response.getData().getDeletehash();
+
+        assertThat(response.getData().getType(), equalTo("image/jpeg"));
+        assertThat(response.getData().getInGallery(), equalTo(false));
+
     }
 
     @AfterEach
@@ -37,7 +46,7 @@ public class ImageUrlTest extends BaseTest {
                 .expect()
                 .spec(positiveUploadResponseSpecification)
                 .when()
-                .delete("/image/{imageDeleteHash}", imageDeleteHash);
+                .delete(IMAGR_DELETE_HASH, imageDeleteHash);
 
     }
 }
